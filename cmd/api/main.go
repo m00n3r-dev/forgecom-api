@@ -19,4 +19,8 @@ func main() {
 		log.Fatal("Failed to connect to database \n", err)
 	}
 	defer db.Close()
+
+	if err := database.RunMigrations(db); err != nil {
+		log.Fatal("Failed to run migrations \n", err)
+	}
 }
