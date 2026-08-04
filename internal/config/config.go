@@ -13,6 +13,7 @@ type Config struct {
 	DBuser     string
 	DBPassword string
 	DBName     string
+	DBSSLMode  string
 }
 
 func Load() (*Config, error) {
@@ -26,6 +27,7 @@ func Load() (*Config, error) {
 		DBuser:     getEnv("DBuser", "root"),
 		DBPassword: getEnv("DBPassword", "0612"),
 		DBName:     getEnv("DBName", "forgecom"),
+		DBSSLMode:  getEnv("DBSSLMode", "disable"),
 	}, nil
 }
 
