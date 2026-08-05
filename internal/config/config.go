@@ -8,6 +8,8 @@ import (
 )
 
 type Config struct {
+	Port string
+
 	DBHost     string
 	DBPort     string
 	DBUser     string
@@ -22,6 +24,7 @@ func Load() (*Config, error) {
 	}
 
 	return &Config{
+		Port:       getEnv("PORT", "8000"),
 		DBHost:     getEnv("DBHost", "localhost"),
 		DBPort:     getEnv("DBPort", "5432"),
 		DBUser:     getEnv("DBUser", "root"),
