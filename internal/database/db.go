@@ -17,7 +17,7 @@ type DB struct {
 
 func Connect(cfg *config.Config) (*DB, error) {
 	connStr := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s",
-		cfg.DBHost, cfg.DBPort, cfg.DBuser, cfg.DBPassword, cfg.DBName, cfg.DBSSLMode)
+		cfg.DBHost, cfg.DBPort, cfg.DBUser, cfg.DBPassword, cfg.DBName, cfg.DBSSLMode)
 
 	db, err := sql.Open("pgx", connStr)
 	if err != nil {

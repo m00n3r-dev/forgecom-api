@@ -10,7 +10,7 @@ import (
 type Config struct {
 	DBHost     string
 	DBPort     string
-	DBuser     string
+	DBUser     string
 	DBPassword string
 	DBName     string
 	DBSSLMode  string
@@ -24,7 +24,7 @@ func Load() (*Config, error) {
 	return &Config{
 		DBHost:     getEnv("DBHost", "localhost"),
 		DBPort:     getEnv("DBPort", "5432"),
-		DBuser:     getEnv("DBuser", "root"),
+		DBUser:     getEnv("DBUser", "root"),
 		DBPassword: getEnv("DBPassword", "0612"),
 		DBName:     getEnv("DBName", "forgecom"),
 		DBSSLMode:  getEnv("DBSSLMode", "disable"),
