@@ -70,14 +70,16 @@ func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token, err := h.service.Login(r.Context(), req)
+	userAgent := r.Header.Get("User-Agent")
+	accessToken, refreshToken, err := h.service.Login(r.Context(), req, userAgent)
 	if err != nil {
 		http.Error(w, err.Error(), 401)
 		return
 	}
 
 	json.NewEncoder(w).Encode(map[string]interface{}{
-		"access_token": token,
-		"token_type":   "Bearer",
+		"access_token":  accessToken,
+		"refresh_token": refreshToken,
+		"token_type":    "Bearer",
 	})
 }

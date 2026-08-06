@@ -29,15 +29,15 @@ func main() {
 		log.Fatal("Failed to run migrations \n", err)
 	}
 
-	// jwt service
 	jwtService := auth.NewJwtService(cnf.JwtSecret)
+	refreshTokenRepo := auth.NewRefreshTokenRepository(db.DB)
 
 	// router
 	r := chi.NewRouter()
 
 	// dependencies
 	userRepository := user.NewRepository(db.DB)
-	userService := user.NewService(userRepository, jwtService)
+	userService := user.NewService(userRepository, jwtService, refreshTokenRepo)
 	userHandler := user.NewHandler(userService)
 
 	r.Post("/auth/register", userHandler.Register)
