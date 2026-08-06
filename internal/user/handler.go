@@ -3,6 +3,9 @@ package user
 import (
 	"encoding/json"
 	"net/http"
+
+	"github.com/go-playground/validator/v10"
+	"github.com/m00n3r-dev/forgecom-api/internal/validation"
 )
 
 type Handler struct {
@@ -17,6 +20,20 @@ func (h *Handler) Register(w http.ResponseWriter, r *http.Request) {
 	var req CreateUserRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		http.Error(w, "invalid request body", http.StatusBadRequest)
+		return
+	}
+
+	validate := validator.New()
+	if err := validate.Struct(req); err != nil {
+		response := map[string]interface{}{
+			"error":  "Validation failed",
+			"fields": validation.Errors(err),
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusBadRequest)
+
+		json.NewEncoder(w).Encode(response)
 		return
 	}
 

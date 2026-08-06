@@ -3,7 +3,6 @@ package user
 import (
 	"context"
 
-	"github.com/go-playground/validator/v10"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -18,11 +17,6 @@ func NewService(repository *Repository) *Service {
 }
 
 func (s *Service) CreateUser(ctx context.Context, req CreateUserRequest) (*User, error) {
-	validate := validator.New()
-	if err := validate.Struct(req); err != nil {
-		return nil, err
-	}
-
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
 	if err != nil {
 		return nil, err
