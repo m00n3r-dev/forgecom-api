@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/m00n3r-dev/forgecom-api/internal/auth"
 	"github.com/m00n3r-dev/forgecom-api/internal/config"
 	"github.com/m00n3r-dev/forgecom-api/internal/database"
 	"github.com/m00n3r-dev/forgecom-api/internal/user"
@@ -28,15 +29,19 @@ func main() {
 		log.Fatal("Failed to run migrations \n", err)
 	}
 
+	// jwt service
+	jwtService := auth.NewJwtService(cnf.JwtSecret)
+
 	// router
 	r := chi.NewRouter()
 
 	// dependencies
 	userRepository := user.NewRepository(db.DB)
-	userService := user.NewService(userRepository)
+	userService := user.NewService(userRepository, jwtService)
 	userHandler := user.NewHandler(userService)
 
 	r.Post("/auth/register", userHandler.Register)
+	r.Post("/auth/login", userHandler.Login)
 
 	fmt.Printf("Application running on PORT :%s\n", cnf.Port)
 	http.ListenAndServe(fmt.Sprintf(":%s", cnf.Port), r)

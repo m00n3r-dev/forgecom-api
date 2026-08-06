@@ -20,5 +20,21 @@ func (r *Repository) Create(ctx context.Context, user *User) error {
 		RETURNING id
 	`
 
-	return r.db.QueryRowContext(ctx, query, user.Name,user.Email, user.Password).Scan(&user.ID)
+	return r.db.QueryRowContext(ctx, query, user.Name, user.Email, user.Password).Scan(&user.ID)
+}
+
+func (r *Repository) GetUserFromEmail(ctx context.Context, email string) (*User, error) {
+	query := `
+		SELECT id,name,email,password FROM users
+		WHERE email = $1
+	`
+
+	var user User
+
+	err := r.db.QueryRowContext(ctx, query, email).Scan(&user.ID, &user.Name, &user.Email, &user.Password)
+	if err != nil {
+		return nil, err
+	}
+
+	return &user, nil
 }

@@ -48,3 +48,36 @@ func (h *Handler) Register(w http.ResponseWriter, r *http.Request) {
 
 	json.NewEncoder(w).Encode(user)
 }
+
+func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
+	var req LoginRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		http.Error(w, "invalid request body", http.StatusBadRequest)
+		return
+	}
+
+	validate := validator.New()
+	if err := validate.Struct(req); err != nil {
+		response := map[string]interface{}{
+			"error":  "Validation failed",
+			"fields": validation.Errors(err),
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusBadRequest)
+
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+
+	token, err := h.service.Login(r.Context(), req)
+	if err != nil {
+		http.Error(w, err.Error(), 401)
+		return
+	}
+
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"access_token": token,
+		"token_type":   "Bearer",
+	})
+}

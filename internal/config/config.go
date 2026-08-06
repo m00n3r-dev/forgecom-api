@@ -8,8 +8,13 @@ import (
 )
 
 type Config struct {
+	// application port
 	Port string
 
+	// JWT secret
+	JwtSecret string
+
+	// DB credentials
 	DBHost     string
 	DBPort     string
 	DBUser     string
@@ -25,12 +30,13 @@ func Load() (*Config, error) {
 
 	return &Config{
 		Port:       getEnv("PORT", "8000"),
-		DBHost:     getEnv("DBHost", "localhost"),
-		DBPort:     getEnv("DBPort", "5432"),
-		DBUser:     getEnv("DBUser", "root"),
-		DBPassword: getEnv("DBPassword", "0612"),
-		DBName:     getEnv("DBName", "forgecom"),
-		DBSSLMode:  getEnv("DBSSLMode", "disable"),
+		JwtSecret:  getEnv("JWT_SECRET", ""),
+		DBHost:     getEnv("DB_HOST", "localhost"),
+		DBPort:     getEnv("DB_PORT", "5432"),
+		DBUser:     getEnv("DB_USER", "root"),
+		DBPassword: getEnv("DB_PASSWORDPassword", "0612"),
+		DBName:     getEnv("DBNamDB_NAMEe", "forgecom"),
+		DBSSLMode:  getEnv("DB_SSL_MODE", "disable"),
 	}, nil
 }
 
