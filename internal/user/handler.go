@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/go-chi/chi/v5"
 	"github.com/go-playground/validator/v10"
 	"github.com/m00n3r-dev/forgecom-api/internal/validation"
 )
@@ -82,4 +83,10 @@ func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
 		"refresh_token": refreshToken,
 		"token_type":    "Bearer",
 	})
+}
+
+// routes
+func (h *Handler) RegisterRoutes(r chi.Router) {
+	r.Post("/auth/register", h.Register)
+	r.Post("/auth/login", h.Login)
 }
