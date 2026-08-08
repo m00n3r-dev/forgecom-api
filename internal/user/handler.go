@@ -6,6 +6,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-playground/validator/v10"
+	"github.com/m00n3r-dev/forgecom-api/internal/auth"
 	"github.com/m00n3r-dev/forgecom-api/internal/validation"
 )
 
@@ -85,8 +86,35 @@ func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
+func (h *Handler) GetProfile(w http.ResponseWriter, r *http.Request) {
+	userID, ok := r.Context().Value(auth.UserIDContextKey).(string)
+	if !ok {
+		http.Error(w, "unauthorized", http.StatusUnauthorized)
+		return
+	}
+
+	user, err := h.service.GetProfile(r.Context(), userID)
+	if err != nil {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusInternalServerError)
+
+		json.NewEncoder(w).Encode(err)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(user)
+}
+
 // routes
 func (h *Handler) RegisterRoutes(r chi.Router) {
 	r.Post("/auth/register", h.Register)
 	r.Post("/auth/login", h.Login)
+
+	r.Group(func(r chi.Router) {
+		r.Use(h.service.jwtService.RequireAuth)
+
+		r.Get("/users/me", h.GetProfile)
+	})
 }

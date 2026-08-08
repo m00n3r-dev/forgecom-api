@@ -86,3 +86,17 @@ func (s *Service) Login(ctx context.Context, req LoginRequest, userAgent string)
 	return accessToken, refreshToken, nil
 
 }
+
+func (s *Service) GetProfile(ctx context.Context, userID string) (*User, error) {
+
+	if userID == "" {
+		return nil, errors.New("user id cannot be null")
+	}
+
+	user, err := s.repository.GetUserFromId(ctx, userID)
+	if err != nil {
+		return nil, errors.New("Failed to fetch user profile")
+	}
+
+	return user, nil
+}

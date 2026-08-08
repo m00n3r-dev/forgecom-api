@@ -38,3 +38,19 @@ func (r *Repository) GetUserFromEmail(ctx context.Context, email string) (*User,
 
 	return &user, nil
 }
+
+func (r *Repository) GetUserFromId(ctx context.Context, userId string) (*User, error) {
+	query := `
+		SELECT id,name,email,password FROM users
+		WHERE id = $1
+	`
+
+	var user User
+
+	err := r.db.QueryRowContext(ctx, query, userId).Scan(&user.ID, &user.Name, &user.Email, &user.Password)
+	if err != nil {
+		return nil, err
+	}
+
+	return &user, nil
+}
