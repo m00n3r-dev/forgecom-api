@@ -44,7 +44,7 @@ func (j *JwtService) VerifyAccessToken(tokenString string) (string, error) {
 		return "", errors.New("Invalid claims")
 	}
 
-	userID, ok := claims["sub"].(string)
+	userID, ok := claims["user_id"].(string)
 	if !ok {
 		return "", errors.New("Invalid subject claims")
 	}
@@ -72,7 +72,7 @@ func (j *JwtService) RequireAuth(next http.Handler) http.Handler {
 
 		userID, err := j.VerifyAccessToken(parts[1])
 		if err != nil {
-			http.Error(w, "invalid or expired token", http.StatusUnauthorized)
+			http.Error(w, err.Error(), http.StatusUnauthorized)
 			return
 		}
 
